@@ -1,0 +1,32 @@
+syntax = "proto3";
+
+package iots.temperature.srv.TemperatureControlSystem;
+
+service TemperatureControlSystem {
+	rpc GetTemperature(Room) returns (RoomTemperatrue) {}
+	rpc SetDesirableTemperature(RoomTemperatrue) returns (Empty) {}
+	rpc CreateNewRoom(Room) returns (Empty) {}
+	rpc SetUpAirConditioner(AirConditioner) returns (Empty)  {}
+	rpc DeleteRoom(Room) returns (Empty) {}
+}
+
+message Message {
+	string say = 1;
+}
+
+message Room {
+	string name = 1;
+}
+
+message RoomTemperatrue {
+	string RoomName = 1;
+	int64 temperature = 2;
+}
+
+message AirConditioner {
+	string room = 1;
+}
+
+message Empty {
+
+}
