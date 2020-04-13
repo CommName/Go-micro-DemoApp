@@ -4,7 +4,8 @@
 *.dll
 *.so
 *.dylib
-
+*.pb.go
+*.pb.micro.go
 # Test binary, built with `go test -c`
 *.test
 
