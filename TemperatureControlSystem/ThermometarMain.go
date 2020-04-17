@@ -4,9 +4,11 @@ import (
 	"github.com/micro/go-micro/util/log"
 	"github.com/micro/go-micro"
 	"TemperatureControlSystem/handler"
-	"TemperatureControlSystem/subscriber"
 
 	thermometar "TemperatureControlSystem/proto/Thermometar"
+	
+	Controller "TemperatureControlSystem/proto/TemperatureControlSystem"
+	"context"
 )
 
 import (
@@ -37,20 +39,33 @@ func main() {
 	)
 
 	// Initialise service
-	service.Init()
+	service.Init(
+		//Publisher logic to broadcast room name
+		micro.AfterStart(func () error {
+			topic := micro.NewPublisher("iots.temperature.srv.Controller.Thermometar", service.Client())
+
+			message := &Controller.Message{
+					Say: roomName,
+			}
+		
+			for ; true ; {
+				err := topic.Publish(context.TODO(), message)
+				if (err!=nil){
+					log.Fatal(err)
+				}
+				time.Sleep(3 * time.Second)
+			}
+		
+			return nil
+		}),
+	)
 
 	// Register Handler
 	termometar := new(handler.Thermometar)
 	termometar.RoomName = roomName
 	termometar.Temperature = 22
 	thermometar.RegisterThermometarHandler(service.Server(), termometar)
-
-	// Register Struct as Subscriber
-	micro.RegisterSubscriber("iots.temperature.srv.Thermometar."+roomName, service.Server(), new(subscriber.Thermometar))
-
-	// Register Function as Subscriber
-	micro.RegisterSubscriber("iots.temperature.srv.Thermometar."+roomName, service.Server(), subscriber.Handler)
-
+	
 	//Env Simulator
 	go EnviermentSimulator(termometar)
 

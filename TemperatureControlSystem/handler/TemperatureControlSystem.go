@@ -4,11 +4,12 @@ import (
 	"context"
 
 	"github.com/micro/go-micro/util/log"
-
 	temperatureControlSystem "TemperatureControlSystem/proto/TemperatureControlSystem"
 )
 
-type TemperatureControlSystem struct{}
+type TemperatureControlSystem struct{
+	
+}
 
 // Call is a single request handler called via client.Call or the generated client code
 func (e *TemperatureControlSystem) GetTemperature(ctx context.Context, req *temperatureControlSystem.Room, rsp *temperatureControlSystem.RoomTemperatrue) error {
@@ -35,3 +36,4 @@ func (e *TemperatureControlSystem) DeleteRoom(ctx context.Context, req *temperat
 	log.Log("Received Hello.Call request")
 	return nil
 }
+

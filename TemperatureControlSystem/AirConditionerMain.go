@@ -5,7 +5,6 @@ import (
 	"github.com/micro/go-micro/util/log"
 	"github.com/micro/go-micro"
 	"TemperatureControlSystem/handler"
-	"TemperatureControlSystem/subscriber"
 	AirConditioner "TemperatureControlSystem/proto/AirConditioner"
 	
 )
@@ -14,7 +13,7 @@ import (
 	"context"
 	Thermometar "TemperatureControlSystem/proto/Thermometar"
 	"github.com/micro/go-micro/client"
-	//"github.com/micro/go-micro/metadata"
+	Controller "TemperatureControlSystem/proto/TemperatureControlSystem"
 )
 
 import (
@@ -40,17 +39,17 @@ func airconditionerLogic(airconditoner *handler.AirConditioner, c client.Client)
 			rsp := &Thermometar.RoomTemperatrue {}
 
 			if err:= c.Call(context.TODO(),req,rsp); err!= nil {
-				//Servis trenutno ne radi najverovatnija greska
-				fmt.Println(err)
+				//Servis trenutno ne radi najverovatnija nije aktivan
+				log.Log(err)
 
 			} else {
-				fmt.Printf("Room %v has temperature %v", rsp.RoomName, rsp.Temperature)
+				fmt.Printf("Room %v has temperature %v\n", rsp.RoomName, rsp.Temperature)
 			}
 		}
-		time.Sleep(5000 *time.Millisecond)
+		time.Sleep(1500 *time.Millisecond)
 	}
-
 }
+
 
 func main() {
 	airconditoner := new(handler.AirConditioner)
@@ -65,18 +64,33 @@ func main() {
 		micro.Version("v1.0"),
 	)
 
-	service.Init()
+	service.Init(
+		//Publisher logic to broadcast room name
+		micro.AfterStart(func () error {
+			topic := micro.NewPublisher("iots.temperature.srv.Controller.AirConditioner", service.Client())
+
+			message := &Controller.Message{
+					Say: airconditoner.RoomName,
+			}
+			fmt.Println("Poruka kreirana")
+		
+			for ; true ; {
+				err := topic.Publish(context.TODO(), message)
+				if (err!=nil){
+					log.Fatal(err)
+				}
+				
+				fmt.Println("Poruka poslata")
+				time.Sleep(3 * time.Second)
+			}
+		
+			return nil
+		}),
+	)
 
 	// Register Handler
-	
 	AirConditioner.RegisterAirConditionerHandler(service.Server(), airconditoner)
 
-	// Register Struct as Subscriber
-	micro.RegisterSubscriber("iots.temperature.srv.AirConditioner", service.Server(), new(subscriber.AirConditioner))
-
-	// Register Function as Subscriber
-	micro.RegisterSubscriber("iots.temperature.srv.AirConditioner", service.Server(), subscriber.Handler)
-	
 	go airconditionerLogic(airconditoner, service.Client())
 
 	// Run service
