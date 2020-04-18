@@ -26,7 +26,12 @@ function getAirCondtionerSetatus(){
         url: url,
         data: "{}",
         success: function(data) {
-            temperature.innerHTML = data.Temperature
+            var powerOn = document.getElementById("AirConditionerPowerOn");
+            var heatingMode = document.getElementById("AirConditionerHeatingMode");
+            var power = document.getElementById("AirConditionerPower");
+            powerOn.innerHTML = "Power On: " + data.powerOn
+            heatingMode.innerHTML = "Heating mode: " + data.HeatingMode;
+            power.innerHTML = "Power: "+data.Power; 
         },
     });
 }
@@ -77,3 +82,4 @@ function refreshPreview(){
 
 roomList.onchange = refreshPreview;
 getRooms();
+refreshPreview();

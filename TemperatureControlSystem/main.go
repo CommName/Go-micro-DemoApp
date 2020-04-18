@@ -11,6 +11,7 @@ import (
 
 	TemperatureControlSystem "TemperatureControlSystem/proto/TemperatureControlSystem"
 	Thermometar "TemperatureControlSystem/proto/Thermometar"
+	Airconditioner "TemperatureControlSystem/proto/AirConditioner"
 
 	"time"
 	"strings"
@@ -56,35 +57,71 @@ func RoomMaintainer(rooms *map[string]time.Time, channel chan string){
 }
 
 func AirConditionerPage(w http.ResponseWriter, r *http.Request){
-	//RoomName :=strings.TrimPrefix( r.URL.RequestURI(),"/Airconditioner/")
+	RoomName :=strings.TrimPrefix( r.URL.RequestURI(),"/Airconditioner/")
+
+	if _, exists := RoomsWithAirConditioner[RoomName]; exists {
+		c := internalService.Client()
+		req := c.NewRequest("iots.temperature.srv.AirConditioner."+RoomName, "AirConditioner.GetDeviceStatus", &Airconditioner.Empty {
+	
+		})
+	
+		rsp := &Airconditioner.DeviceStatus {}
+		if err:= c.Call(context.TODO(),req,rsp); err!= nil {
+			http.Error(w, err.Error(), 500)
+			log.Log(err)
+			return
+		}
+	
+		// encode and write the response as json
+		if err := json.NewEncoder(w).Encode(rsp); err != nil {
+			http.Error(w, err.Error(), 500)
+			return
+		}
+	} else {
+		response := map[string]interface{}{
+			"powerOn": "No data available",
+			"HeatingMode": "No data available",
+			"Power": "No data available",
+		}
+		if err := json.NewEncoder(w).Encode(response); err != nil {
+			http.Error(w, err.Error(), 500)
+			return
+		}
+	}
 	
 }
 
 func ThermometarPage(w http.ResponseWriter, r *http.Request){
 	RoomName :=strings.TrimPrefix( r.URL.RequestURI(),"/Thermometar/")
-	var request map[string]interface{}
-	if err := json.NewDecoder(r.Body).Decode(&request); err != nil {
-		http.Error(w, err.Error(), 500)
-		return
-	}
-	c := internalService.Client()
-	req := c.NewRequest("iots.temperature.srv.Thermometar."+RoomName, "Thermometar.GetStatus", &Thermometar.Empty {
 
-	})
-
-	rsp := &Thermometar.RoomTemperatrue {}
-	if err:= c.Call(context.TODO(),req,rsp); err!= nil {
-		http.Error(w, err.Error(), 500)
-		log.Log(err)
-		return
-	}
-
-	// encode and write the response as json
-	if err := json.NewEncoder(w).Encode(rsp); err != nil {
-		http.Error(w, err.Error(), 500)
-		return
-	}
+	if _, exists := RoomsWithThermometar[RoomName]; exists {
+		c := internalService.Client()
+		req := c.NewRequest("iots.temperature.srv.Thermometar."+RoomName, "Thermometar.GetStatus", &Thermometar.Empty {
 	
+		})
+	
+		rsp := &Thermometar.RoomTemperatrue {}
+		if err:= c.Call(context.TODO(),req,rsp); err!= nil {
+			http.Error(w, err.Error(), 500)
+			log.Log(err)
+			return
+		}
+	
+		// encode and write the response as json
+		if err := json.NewEncoder(w).Encode(rsp); err != nil {
+			http.Error(w, err.Error(), 500)
+			return
+		}
+	} else {
+		response := map[string]interface{}{
+			"RoomName": RoomName,
+			"Temperature": "No data available",
+		}
+		if err := json.NewEncoder(w).Encode(response); err != nil {
+			http.Error(w, err.Error(), 500)
+			return
+		}
+	}
 }
 
 func GetRooms(w http.ResponseWriter, r *http.Request){
