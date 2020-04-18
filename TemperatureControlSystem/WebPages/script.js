@@ -56,7 +56,12 @@ function getRooms(){
         url: url,
         data: "{}",
         success: function(resp) {
-            console.log(resp);
+            roomList.innerHTML =""
+            if(resp!=null){
+                for (index = 0; index < resp.length; index++){
+                    roomList.innerHTML += "<option value=\""+resp[index]+"\">"+resp[index]+"</option>"
+                }
+            }
             
         },
         error: function(error) {
@@ -65,4 +70,10 @@ function getRooms(){
     });
 }
 
+function refreshPreview(){
+    getTemperatureStatus();
+    getAirCondtionerSetatus();
+}
+
+roomList.onchange = refreshPreview;
 getRooms();

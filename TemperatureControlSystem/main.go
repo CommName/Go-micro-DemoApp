@@ -10,10 +10,10 @@ import (
 
 
 	TemperatureControlSystem "TemperatureControlSystem/proto/TemperatureControlSystem"
-	"fmt"
+	Thermometar "TemperatureControlSystem/proto/Thermometar"
+
 	"time"
 	"strings"
-	"strconv"
 	"encoding/json"
 )
 
@@ -56,12 +56,34 @@ func RoomMaintainer(rooms *map[string]time.Time, channel chan string){
 }
 
 func AirConditionerPage(w http.ResponseWriter, r *http.Request){
-	RoomName :=strings.TrimPrefix( r.URL.RequestURI(),"/Airconditioner/")
+	//RoomName :=strings.TrimPrefix( r.URL.RequestURI(),"/Airconditioner/")
 	
 }
 
 func ThermometarPage(w http.ResponseWriter, r *http.Request){
 	RoomName :=strings.TrimPrefix( r.URL.RequestURI(),"/Thermometar/")
+	var request map[string]interface{}
+	if err := json.NewDecoder(r.Body).Decode(&request); err != nil {
+		http.Error(w, err.Error(), 500)
+		return
+	}
+	c := internalService.Client()
+	req := c.NewRequest("iots.temperature.srv.Thermometar."+RoomName, "Thermometar.GetStatus", &Thermometar.Empty {
+
+	})
+
+	rsp := &Thermometar.RoomTemperatrue {}
+	if err:= c.Call(context.TODO(),req,rsp); err!= nil {
+		http.Error(w, err.Error(), 500)
+		log.Log(err)
+		return
+	}
+
+	// encode and write the response as json
+	if err := json.NewEncoder(w).Encode(rsp); err != nil {
+		http.Error(w, err.Error(), 500)
+		return
+	}
 	
 }
 
