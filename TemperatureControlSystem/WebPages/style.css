@@ -1,0 +1,39 @@
+
+
+h1 {
+    text-align: center;
+}
+
+.Rooms {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.Thermometar{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.AirConditioner {
+    display: flex;
+    justify-content: left;
+}
+
+.AirConditionerStatus {
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+    justify-content: center;
+    align-items: center;
+}
+
+.AirConditionerControler {
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+    justify-content: center;
+    align-items: center;
+}

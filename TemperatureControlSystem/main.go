@@ -13,6 +13,8 @@ import (
 	"fmt"
 	"time"
 	"strings"
+	"strconv"
+	"encoding/json"
 )
 
 var (
@@ -53,34 +55,29 @@ func RoomMaintainer(rooms *map[string]time.Time, channel chan string){
 
 }
 
-func HomePage(w http.ResponseWriter, r *http.Request){
-	fmt.Fprint(w, "<html><body><h1>Temperature Control System</h1>")
-
-	//Rooms with thermometar
-	fmt.Fprint(w, "<div><h2>Thermometars: <h2> <ul>")
-	for key,_ := range RoomsWithThermometar {
-	fmt.Fprint(w, "<li><a href=\"./Thermometar/"+key+"\">"+key+"</a></li>")
-	}
-	fmt.Fprint(w, "</ul></div>")
-
-	//Rooms with airconditioner
-	fmt.Fprint(w, "<div><h2>Airconditioners: <h2> <ul>")
-	for key,_ := range RoomsWithAirConditioner {
-		fmt.Fprint(w, "<li><a href=\"./Airconditioner/"+key+"\">"+key+"</a></li>")
-	}
-	fmt.Fprint(w, "</ul></div>")
-
-	fmt.Fprint(w, "</body></html>")
-}
-
 func AirConditionerPage(w http.ResponseWriter, r *http.Request){
 	RoomName :=strings.TrimPrefix( r.URL.RequestURI(),"/Airconditioner/")
-	fmt.Fprint(w, "<html><body><h1>"+RoomName+"</h1></body></html>")
+	
 }
 
 func ThermometarPage(w http.ResponseWriter, r *http.Request){
 	RoomName :=strings.TrimPrefix( r.URL.RequestURI(),"/Thermometar/")
-	fmt.Fprint(w, "<html><body><h1>"+RoomName+"</h1></body></html>")
+	
+}
+
+func GetRooms(w http.ResponseWriter, r *http.Request){
+	var RoomNames []string
+	for key, _ := range RoomsWithThermometar {
+		RoomNames = append(RoomNames,key)
+	}
+	
+	//TODO add other rooms
+
+	// encode and write the response as json
+	if err := json.NewEncoder(w).Encode(RoomNames); err != nil {
+		http.Error(w, err.Error(), 500)
+		return
+	}
 }
 
 func TopicServer(){
@@ -115,7 +112,8 @@ func main() {
 		web.Name("iots.TemperatureControlSystem"),
 	)
 
-	service.HandleFunc("/", HomePage)
+	service.Handle("/", http.FileServer(http.Dir("WebPages")))
+	service.HandleFunc("/GetRooms", GetRooms)
 	service.HandleFunc("/Airconditioner/",AirConditionerPage)
 	service.HandleFunc("/Thermometar/",ThermometarPage)
 	

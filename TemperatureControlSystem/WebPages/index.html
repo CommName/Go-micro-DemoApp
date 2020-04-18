@@ -1,0 +1,39 @@
+<html>
+    <head>
+        <title> Temperature control system</title>
+        <link rel="stylesheet" type="text/css" href="style.css">
+    </head>
+    <body>
+        <h1> Temperature control system</h1>
+        <div class="Rooms">
+            <p> Please select room: </p> 
+            <select id="RoomName"> 
+                <option value="test"> Test1</option>
+            </select>
+        </div>
+        <div class="Thermometar">
+            <h2> Temperature</h2>
+            <p id="Temperature"> 31 </p>
+        </div>
+        <div class="AirConditioner">
+            <div class="AirConditionerStatus">
+                <h2> Status</h2>
+                <p> Power On: On</p>
+                <p> HeatingMode: On</p>
+                <p> Power: 1</p>
+
+            </div>
+            <div class="AirConditionerControler">
+                <h2> Controler</h2>
+                <form action="">
+                    <label>Power on</label> <input type="checkbox" id="PowerOn" name="Power on">  <br>
+                    <label>Heating on</label> <input type="checkbox" id="HeatingMode" name="Heating on">  <br>
+                    <label>Power </label> <input type="number" id="Power" name="Power">  <br>
+                </form>
+            </div>
+        </div>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.2/jquery.min.js"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS" crossorigin="anonymous"></script>
+        <script src="script.js"></script>
+    </body>
+</html>
