@@ -38,15 +38,26 @@ function getAirCondtionerSetatus(){
 
 function setAirCondtionerStatus(){
     var roomName =roomList.value
-    var url = window.location.href.replace(/\/$/, "") + "/Airconditioner/"+roomName;
+    var url = window.location.href.replace(/\/$/, "") + "/SetAirconditioner/"+roomName;
+    var powerOn = document.getElementById("PowerOn").checked
+    var heatingOn = document.getElementById("HeatingMode").checked
+    var power = docuemnt.getElementById("Power").value
+    var autoTemperature = document.getElementById("AutoTemp").checked
+    var desiredtemp = document.getElementById("DesiredTemp").value
     $.ajax({
         method: "POST",
         dataType: "json",
         contentType: "application/json",
         url: url,
-        data: "{}",
+        data: JSON.stringify({
+            PowerOn: powerOn,
+            heatingOn: heatingOn,
+            Power: power,
+            AutoTemperature: autoTemperature,
+            DesiredTemp: desiredtemp,
+        }),
         success: function(data) {
-            temperature.innerHTML = data.Temperature
+            getAirCondtionerSetatus();
         },
     });
 }

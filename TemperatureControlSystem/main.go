@@ -56,6 +56,39 @@ func RoomMaintainer(rooms *map[string]time.Time, channel chan string){
 
 }
 
+func SetAirconditioner(w http.ResponseWriter, r*http.Request){
+	RoomName :=strings.TrimPrefix( r.URL.RequestURI(),"/SetAirconditioner/")
+	log.Log("Test")
+	if _, exists := RoomsWithAirConditioner[RoomName]; exists {
+		// decode the incoming request as json
+		var request map[string]interface{}
+		if err := json.NewDecoder(r.Body).Decode(&request); err != nil {
+			http.Error(w, err.Error(), 500)
+			return
+		}
+		
+		c := internalService.Client()
+		req := c.NewRequest("iots.temperature.srv.AirConditioner."+RoomName, "AirConditioner.SetDeviceStatus", &Airconditioner.DeviceStatus {
+			PowerOn: request["PowerOn"].(bool),
+			HeatingMode: request["heatingOn"].(bool),
+			Power: request["Power"].(int32),
+		})
+	
+		rsp := &Airconditioner.Empty {}
+		if err:= c.Call(context.TODO(),req,rsp); err!= nil {
+			http.Error(w, err.Error(), 500)
+			log.Log(err)
+			return
+		}
+	
+		// encode and write the response as json
+		if err := json.NewEncoder(w).Encode(rsp); err != nil {
+			http.Error(w, err.Error(), 500)
+			return
+		}
+	}
+}
+
 func AirConditionerPage(w http.ResponseWriter, r *http.Request){
 	RoomName :=strings.TrimPrefix( r.URL.RequestURI(),"/Airconditioner/")
 
@@ -175,6 +208,7 @@ func main() {
 	service.HandleFunc("/GetRooms", GetRooms)
 	service.HandleFunc("/Airconditioner/",AirConditionerPage)
 	service.HandleFunc("/Thermometar/",ThermometarPage)
+	service.HandleFunc("/SetAirconditioner/",SetAirconditioner)
 	
 
 	if err := service.Init(); err!=nil {
