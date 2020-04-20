@@ -10,8 +10,8 @@ import (
 
 
 	TemperatureControlSystem "github.com/CommName/Go-micro-DemoApp/TemperatureControlSystem/proto/TemperatureControlSystem"
-	Thermometar "github.com/CommName/Go-micro-DemoApp/TemperatureControlSystem/proto/Thermometar"
-	Airconditioner "github.com/CommName/Go-micro-DemoApp/TemperatureControlSystem/proto/AirConditioner"
+	Thermometar "github.com/CommName/Go-micro-DemoApp/Thermometar/proto/Thermometar"
+	Airconditioner "github.com/CommName/Go-micro-DemoApp/AirConditioner/proto/AirConditioner"
 
 	"time"
 	"strings"
