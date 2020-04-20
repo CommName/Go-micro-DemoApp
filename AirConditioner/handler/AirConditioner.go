@@ -3,7 +3,7 @@ package handler
 import (
 	"context"
 	
-	airconditioner "TemperatureControlSystem/proto/AirConditioner"
+	airconditioner "github.com/CommName/Go-micro-DemoApp/AirConditioner/proto/AirConditioner"
 )
 
 type AirConditioner struct {

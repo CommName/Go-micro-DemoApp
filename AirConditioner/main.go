@@ -4,16 +4,16 @@ import (
 
 	"github.com/micro/go-micro/util/log"
 	"github.com/micro/go-micro"
-	"TemperatureControlSystem/handler"
-	AirConditioner "TemperatureControlSystem/proto/AirConditioner"
+	"github.com/CommName/Go-micro-DemoApp/AirConditioner/handler"
+	AirConditioner "github.com/CommName/Go-micro-DemoApp/AirConditioner/proto/AirConditioner"
 	
 )
 
 import (
 	"context"
-	Thermometar "TemperatureControlSystem/proto/Thermometar"
+	Thermometar "github.com/CommName/Go-micro-DemoApp/Thermometar/proto/Thermometar"
 	"github.com/micro/go-micro/client"
-	Controller "TemperatureControlSystem/proto/TemperatureControlSystem"
+	Controller "github.com/CommName/Go-micro-DemoApp/TemperatureControlSystem/proto/TemperatureControlSystem"
 )
 
 import (
