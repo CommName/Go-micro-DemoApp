@@ -9,9 +9,9 @@ import (
 	"net/http"
 
 
-	TemperatureControlSystem "TemperatureControlSystem/proto/TemperatureControlSystem"
-	Thermometar "TemperatureControlSystem/proto/Thermometar"
-	Airconditioner "TemperatureControlSystem/proto/AirConditioner"
+	TemperatureControlSystem "github.com/CommName/Go-micro-DemoApp/TemperatureControlSystem/proto/TemperatureControlSystem"
+	Thermometar "github.com/CommName/Go-micro-DemoApp/TemperatureControlSystem/proto/Thermometar"
+	Airconditioner "github.com/CommName/Go-micro-DemoApp/TemperatureControlSystem/proto/AirConditioner"
 
 	"time"
 	"strings"
