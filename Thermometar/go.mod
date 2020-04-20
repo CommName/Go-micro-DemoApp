@@ -1,4 +1,5 @@
-module Thermometar
+
+module github.com/CommName/Go-micro-DemoApp/Thermometar
 
 go 1.14
 

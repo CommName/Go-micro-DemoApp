@@ -3,9 +3,9 @@ package main
 import (
 	"github.com/micro/go-micro/util/log"
 	"github.com/micro/go-micro"
-	"Thermometar/handler"
+	"github.com/CommName/Go-micro-DemoApp/Thermometar/handler"
 
-	thermometar "Thermometar/proto/Thermometar"
+	thermometar "github.com/CommName/Go-micro-DemoApp/Thermometar/proto/Thermometar"
 	
 	Controller "github.com/CommName/Go-micro-DemoApp/TemperatureControlSystem/proto/TemperatureControlSystem"
 	"context"
