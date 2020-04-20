@@ -1,11 +1,11 @@
-# AirCondtioner Service
+# AirConditioner Service
 
-This is the AirCondtioner service
+This is the AirConditioner service
 
 Generated with
 
 ```
-micro new AirCondtioner --namespace=github.com/CommName --type=srv
+micro new AirConditioner --namespace=github.com/CommName --type=srv
 ```
 
 ## Getting Started
@@ -16,9 +16,9 @@ micro new AirCondtioner --namespace=github.com/CommName --type=srv
 
 ## Configuration
 
-- FQDN: github.com/CommName.srv.AirCondtioner
+- FQDN: github.com/CommName.srv.AirConditioner
 - Type: srv
-- Alias: AirCondtioner
+- Alias: AirConditioner
 
 ## Dependencies
 
@@ -46,7 +46,7 @@ make build
 
 Run the service
 ```
-./AirCondtioner-srv
+./AirConditioner-srv
 ```
 
 Build a docker image

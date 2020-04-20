@@ -7,7 +7,7 @@ import (
 
 	thermometar "Thermometar/proto/Thermometar"
 	
-	Controller "TemperatureControlSystem/proto/TemperatureControlSystem"
+	Controller "github.com/CommName/Go-micro-DemoApp/TemperatureControlSystem/proto/TemperatureControlSystem"
 	"context"
 )
 
