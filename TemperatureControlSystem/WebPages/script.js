@@ -41,9 +41,15 @@ function setAirCondtionerStatus(){
     var url = window.location.href.replace(/\/$/, "") + "/SetAirconditioner/"+roomName;
     var powerOn = document.getElementById("PowerOn").checked
     var heatingOn = document.getElementById("HeatingMode").checked
-    var power = docuemnt.getElementById("Power").value
+    var power = parseInt(document.getElementById("Power").value)
     var autoTemperature = document.getElementById("AutoTemp").checked
     var desiredtemp = document.getElementById("DesiredTemp").value
+    if(isNaN(power)){
+        power = 0
+    }
+    if (isNaN(desiredtemp)){
+        desiredtemp = 0
+    }
     $.ajax({
         method: "POST",
         dataType: "json",
@@ -56,7 +62,7 @@ function setAirCondtionerStatus(){
             AutoTemperature: autoTemperature,
             DesiredTemp: desiredtemp,
         }),
-        success: function(data) {
+        success: function(res) {
             getAirCondtionerSetatus();
         },
     });

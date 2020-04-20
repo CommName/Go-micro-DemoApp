@@ -58,7 +58,7 @@ func RoomMaintainer(rooms *map[string]time.Time, channel chan string){
 
 func SetAirconditioner(w http.ResponseWriter, r*http.Request){
 	RoomName :=strings.TrimPrefix( r.URL.RequestURI(),"/SetAirconditioner/")
-	log.Log("Test")
+
 	if _, exists := RoomsWithAirConditioner[RoomName]; exists {
 		// decode the incoming request as json
 		var request map[string]interface{}
@@ -66,12 +66,12 @@ func SetAirconditioner(w http.ResponseWriter, r*http.Request){
 			http.Error(w, err.Error(), 500)
 			return
 		}
-		
+
 		c := internalService.Client()
 		req := c.NewRequest("iots.temperature.srv.AirConditioner."+RoomName, "AirConditioner.SetDeviceStatus", &Airconditioner.DeviceStatus {
 			PowerOn: request["PowerOn"].(bool),
 			HeatingMode: request["heatingOn"].(bool),
-			Power: request["Power"].(int32),
+			Power: int32(request["Power"].(float64)),
 		})
 	
 		rsp := &Airconditioner.Empty {}
@@ -80,7 +80,7 @@ func SetAirconditioner(w http.ResponseWriter, r*http.Request){
 			log.Log(err)
 			return
 		}
-	
+		
 		// encode and write the response as json
 		if err := json.NewEncoder(w).Encode(rsp); err != nil {
 			http.Error(w, err.Error(), 500)
@@ -163,7 +163,20 @@ func GetRooms(w http.ResponseWriter, r *http.Request){
 		RoomNames = append(RoomNames,key)
 	}
 	
-	//TODO add other rooms
+	for key, _ := range RoomsWithAirConditioner {
+		
+		found := false
+		for _, name := range RoomNames{
+			if(name==key){
+				found= true
+				break
+			}
+		}
+		
+		if !found {
+			RoomNames = append(RoomNames, key)
+		}
+	}
 
 	// encode and write the response as json
 	if err := json.NewEncoder(w).Encode(RoomNames); err != nil {

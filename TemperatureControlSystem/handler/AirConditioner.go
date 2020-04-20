@@ -4,6 +4,7 @@ import (
 	"context"
 	
 	airconditioner "TemperatureControlSystem/proto/AirConditioner"
+	"fmt"
 )
 
 type AirConditioner struct {
@@ -16,6 +17,7 @@ type AirConditioner struct {
 
 
 func (e *AirConditioner) SetDeviceStatus(context context.Context, req *airconditioner.DeviceStatus, rep *airconditioner.Empty) error {
+	fmt.Println("updated")
 	e.PowerOn = req.PowerOn
 	e.HeatingMode = req.HeatingMode
 	e.Power = req.Power

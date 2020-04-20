@@ -72,7 +72,6 @@ func main() {
 			message := &Controller.Message{
 					Say: airconditoner.RoomName,
 			}
-			fmt.Println("Poruka kreirana")
 		
 			for ; true ; {
 				err := topic.Publish(context.TODO(), message)
@@ -80,7 +79,6 @@ func main() {
 					log.Fatal(err)
 				}
 				
-				fmt.Println("Poruka poslata")
 				time.Sleep(3 * time.Second)
 			}
 		
