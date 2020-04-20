@@ -6,7 +6,7 @@ import (
 
 	"github.com/micro/go-micro/util/log"
 
-	thermometar "TemperatureControlSystem/proto/Thermometar"
+	thermometar "Thermometar/proto/Thermometar"
 )
 
 type Thermometar struct{
