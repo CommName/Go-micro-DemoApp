@@ -34,11 +34,6 @@ var _ server.Option
 // Client API for TemperatureControlSystem service
 
 type TemperatureControlSystemService interface {
-	GetTemperature(ctx context.Context, in *Room, opts ...client.CallOption) (*RoomTemperatrue, error)
-	SetDesirableTemperature(ctx context.Context, in *RoomTemperatrue, opts ...client.CallOption) (*Empty, error)
-	CreateNewRoom(ctx context.Context, in *Room, opts ...client.CallOption) (*Empty, error)
-	SetUpAirConditioner(ctx context.Context, in *AirConditioner, opts ...client.CallOption) (*Empty, error)
-	DeleteRoom(ctx context.Context, in *Room, opts ...client.CallOption) (*Empty, error)
 }
 
 type temperatureControlSystemService struct {
@@ -59,73 +54,13 @@ func NewTemperatureControlSystemService(name string, c client.Client) Temperatur
 	}
 }
 
-func (c *temperatureControlSystemService) GetTemperature(ctx context.Context, in *Room, opts ...client.CallOption) (*RoomTemperatrue, error) {
-	req := c.c.NewRequest(c.name, "TemperatureControlSystem.GetTemperature", in)
-	out := new(RoomTemperatrue)
-	err := c.c.Call(ctx, req, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *temperatureControlSystemService) SetDesirableTemperature(ctx context.Context, in *RoomTemperatrue, opts ...client.CallOption) (*Empty, error) {
-	req := c.c.NewRequest(c.name, "TemperatureControlSystem.SetDesirableTemperature", in)
-	out := new(Empty)
-	err := c.c.Call(ctx, req, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *temperatureControlSystemService) CreateNewRoom(ctx context.Context, in *Room, opts ...client.CallOption) (*Empty, error) {
-	req := c.c.NewRequest(c.name, "TemperatureControlSystem.CreateNewRoom", in)
-	out := new(Empty)
-	err := c.c.Call(ctx, req, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *temperatureControlSystemService) SetUpAirConditioner(ctx context.Context, in *AirConditioner, opts ...client.CallOption) (*Empty, error) {
-	req := c.c.NewRequest(c.name, "TemperatureControlSystem.SetUpAirConditioner", in)
-	out := new(Empty)
-	err := c.c.Call(ctx, req, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *temperatureControlSystemService) DeleteRoom(ctx context.Context, in *Room, opts ...client.CallOption) (*Empty, error) {
-	req := c.c.NewRequest(c.name, "TemperatureControlSystem.DeleteRoom", in)
-	out := new(Empty)
-	err := c.c.Call(ctx, req, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
 // Server API for TemperatureControlSystem service
 
 type TemperatureControlSystemHandler interface {
-	GetTemperature(context.Context, *Room, *RoomTemperatrue) error
-	SetDesirableTemperature(context.Context, *RoomTemperatrue, *Empty) error
-	CreateNewRoom(context.Context, *Room, *Empty) error
-	SetUpAirConditioner(context.Context, *AirConditioner, *Empty) error
-	DeleteRoom(context.Context, *Room, *Empty) error
 }
 
 func RegisterTemperatureControlSystemHandler(s server.Server, hdlr TemperatureControlSystemHandler, opts ...server.HandlerOption) error {
 	type temperatureControlSystem interface {
-		GetTemperature(ctx context.Context, in *Room, out *RoomTemperatrue) error
-		SetDesirableTemperature(ctx context.Context, in *RoomTemperatrue, out *Empty) error
-		CreateNewRoom(ctx context.Context, in *Room, out *Empty) error
-		SetUpAirConditioner(ctx context.Context, in *AirConditioner, out *Empty) error
-		DeleteRoom(ctx context.Context, in *Room, out *Empty) error
 	}
 	type TemperatureControlSystem struct {
 		temperatureControlSystem
@@ -136,24 +71,4 @@ func RegisterTemperatureControlSystemHandler(s server.Server, hdlr TemperatureCo
 
 type temperatureControlSystemHandler struct {
 	TemperatureControlSystemHandler
-}
-
-func (h *temperatureControlSystemHandler) GetTemperature(ctx context.Context, in *Room, out *RoomTemperatrue) error {
-	return h.TemperatureControlSystemHandler.GetTemperature(ctx, in, out)
-}
-
-func (h *temperatureControlSystemHandler) SetDesirableTemperature(ctx context.Context, in *RoomTemperatrue, out *Empty) error {
-	return h.TemperatureControlSystemHandler.SetDesirableTemperature(ctx, in, out)
-}
-
-func (h *temperatureControlSystemHandler) CreateNewRoom(ctx context.Context, in *Room, out *Empty) error {
-	return h.TemperatureControlSystemHandler.CreateNewRoom(ctx, in, out)
-}
-
-func (h *temperatureControlSystemHandler) SetUpAirConditioner(ctx context.Context, in *AirConditioner, out *Empty) error {
-	return h.TemperatureControlSystemHandler.SetUpAirConditioner(ctx, in, out)
-}
-
-func (h *temperatureControlSystemHandler) DeleteRoom(ctx context.Context, in *Room, out *Empty) error {
-	return h.TemperatureControlSystemHandler.DeleteRoom(ctx, in, out)
 }

@@ -31,11 +31,16 @@ github.com/BurntSushi/xgb v0.0.0-20160522181843-27f122750802/go.mod h1:IVnqGOEym
 github.com/CommName/Go-micro-DemoApp v0.0.0-20200420214517-6672e4c65429 h1:DI7kijrCegtxqpZOlDbFPrdjZKmoevL7BodmvpXKaNc=
 github.com/CommName/Go-micro-DemoApp v0.0.0-20200420214517-6672e4c65429/go.mod h1:92zAaxYRZDH45vT3sYv6XgNax9y9n2lVn6/QyGw0AjM=
 github.com/CommName/Go-micro-DemoApp v0.0.0-20200420223851-0df78d5bf421 h1:8W7Z+QjTF5j60jOaLjsAycZ6edyZl7aifwwEvaAp8/Q=
+github.com/CommName/Go-micro-DemoApp v0.0.0-20200420230845-8138b4c0b529 h1:sZkpZWxt1OUpOSVam8YTKn12k1wjOTg56hMMrYMb90g=
 github.com/CommName/Go-micro-DemoApp/TemperatureControlSystem v0.0.0-20200420220009-edfb95b0c02e/go.mod h1:eWqYXaszVQnzO9L9qXvK6C3IZKgm5hdvB7AIIWVRwrs=
 github.com/CommName/Go-micro-DemoApp/TemperatureControlSystem v0.0.0-20200420223851-0df78d5bf421 h1:iAK9+TMJ+t7E/JEFQW6NRUn0jzeGHG0IqMYv/1BwR24=
 github.com/CommName/Go-micro-DemoApp/TemperatureControlSystem v0.0.0-20200420223851-0df78d5bf421/go.mod h1:eWqYXaszVQnzO9L9qXvK6C3IZKgm5hdvB7AIIWVRwrs=
+github.com/CommName/Go-micro-DemoApp/TemperatureControlSystem v0.0.0-20200420230845-8138b4c0b529 h1:oPszbAAuVZ2vXWmnUjwQDcLOdDyPDyG/mAKZXBkiN3s=
+github.com/CommName/Go-micro-DemoApp/TemperatureControlSystem v0.0.0-20200420230845-8138b4c0b529/go.mod h1:nY5i+kmYbgD+dMpq1h+84mr9NEzjfdVTTRUksRA1G3s=
 github.com/CommName/Go-micro-DemoApp/Thermometar v0.0.0-20200420223851-0df78d5bf421 h1:jl281g4JrcOa+u3YfPmOgAsbH1wxR9badw5IhIer2hg=
 github.com/CommName/Go-micro-DemoApp/Thermometar v0.0.0-20200420223851-0df78d5bf421/go.mod h1:hQVfloRBUQKGH5JLbA1yS4Sg8jyrpUK1ltyoBlRO79o=
+github.com/CommName/Go-micro-DemoApp/Thermometar v0.0.0-20200420230845-8138b4c0b529 h1:jbdaDJVZVExxiM3r9agP5bpkmzP1n/sVK9Xju22PbLs=
+github.com/CommName/Go-micro-DemoApp/Thermometar v0.0.0-20200420230845-8138b4c0b529/go.mod h1:hQVfloRBUQKGH5JLbA1yS4Sg8jyrpUK1ltyoBlRO79o=
 github.com/Microsoft/go-winio v0.4.14/go.mod h1:qXqCSQ3Xa7+6tgxaGTIe4Kpcdsi+P8jBhyzoq1bpyYA=
 github.com/Microsoft/go-winio v0.4.15-0.20190919025122-fc70bd9a86b5/go.mod h1:tTuCMEN+UleMWgg9dVx4Hu52b1bJo+59jBh3ajtinzw=
 github.com/Microsoft/hcsshim v0.8.6/go.mod h1:Op3hHsoHPAvb6lceZHDtd9OkTew38wNoXnJs8iY7rUg=

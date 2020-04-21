@@ -2,21 +2,41 @@ package subscriber
 
 import (
 	"context"
-	"github.com/micro/go-micro/util/log"
+	"github.com/micro/go-micro"
+	"github.com/micro/go-micro/server"
 
-	temperatureControlSystem "TemperatureControlSystem/proto/TemperatureControlSystem"
-
+	TemperatureControlSystem "github.com/CommName/Go-micro-DemoApp/TemperatureControlSystem/proto/TemperatureControlSystem"
+	"time"
 )
 
-type TemperatureControlSystem struct{}
+func RoomMapper( roomMapper chan string, topic string, server server.Server) error{
 
-func (e *TemperatureControlSystem) Handle(ctx context.Context, msg *temperatureControlSystem.Message) error {
-	log.Log("Handler Received message: ", msg.Say)
+	micro.RegisterSubscriber("iots.temperature.srv.Controller."+topic,server,func(ctx context.Context, event *TemperatureControlSystem.Message) error{
+		roomMapper <- event.Say
+		return nil
+	})
 	return nil
 }
 
-func Handler(ctx context.Context, msg *temperatureControlSystem.Message) error {
-	log.Log("Function Received message: ", msg.Say)
-	return nil
-}
+func RoomMaintainer(rooms *map[string]time.Time, channel chan string){
 
+	deleteTimer := time.Tick (3 * time.Second)
+	for ;true; {
+		select {
+			case roomName := <- channel:
+
+				(*rooms)[roomName] = time.Now()
+			
+			case <-deleteTimer:
+				for key, value := range *rooms {
+					if(time.Since(value) >  3 *time.Second){
+						delete(*rooms,key)
+					}
+				}
+			
+			default:
+				time.Sleep(300 * time.Millisecond)
+		}
+	}
+
+}

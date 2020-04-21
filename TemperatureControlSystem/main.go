@@ -4,190 +4,30 @@ import (
 	"github.com/micro/go-micro/util/log"
 	"github.com/micro/go-micro"
 	"github.com/micro/go-micro/web"
-	"github.com/micro/go-micro/server"
-	"context"
 	"net/http"
 
-
-	TemperatureControlSystem "github.com/CommName/Go-micro-DemoApp/TemperatureControlSystem/proto/TemperatureControlSystem"
-	Thermometar "github.com/CommName/Go-micro-DemoApp/Thermometar/proto/Thermometar"
-	Airconditioner "github.com/CommName/Go-micro-DemoApp/AirConditioner/proto/AirConditioner"
-
+	handler "github.com/CommName/Go-micro-DemoApp/TemperatureControlSystem/handler"
+	subscriber "github.com/CommName/Go-micro-DemoApp/TemperatureControlSystem/subscriber"
+	
 	"time"
-	"strings"
-	"encoding/json"
 )
 
-var (
-	RoomsWithThermometar map[string] time.Time
-	RoomsWithAirConditioner map[string]time.Time
-	internalService micro.Service
-)
 
-func RoomMapper( roomMapper chan string, topic string, server server.Server) error{
 
-	micro.RegisterSubscriber("iots.temperature.srv.Controller."+topic,server,func(ctx context.Context, event *TemperatureControlSystem.Message) error{
-		roomMapper <- event.Say
-		return nil
-	})
-	return nil
-}
+func TopicServer(RoomsWithThermometar *map[string] time.Time, RoomsWithAirConditioner *map[string]time.Time,internalService *micro.Service){
 
-func RoomMaintainer(rooms *map[string]time.Time, channel chan string){
-
-	deleteTimer := time.Tick (3 * time.Second)
-	for ;true; {
-		select {
-			case roomName := <- channel:
-
-				(*rooms)[roomName] = time.Now()
-			
-			case <-deleteTimer:
-				for key, value := range *rooms {
-					if(time.Since(value) >  3 *time.Second){
-						delete(*rooms,key)
-					}
-				}
-			
-			default:
-				time.Sleep(300 * time.Millisecond)
-		}
-	}
-
-}
-
-func SetAirconditioner(w http.ResponseWriter, r*http.Request){
-	RoomName :=strings.TrimPrefix( r.URL.RequestURI(),"/SetAirconditioner/")
-	log.Log("Test")
-	if _, exists := RoomsWithAirConditioner[RoomName]; exists {
-		// decode the incoming request as json
-		var request map[string]interface{}
-		if err := json.NewDecoder(r.Body).Decode(&request); err != nil {
-			http.Error(w, err.Error(), 500)
-			return
-		}
-		
-		c := internalService.Client()
-		req := c.NewRequest("iots.temperature.srv.AirConditioner."+RoomName, "AirConditioner.SetDeviceStatus", &Airconditioner.DeviceStatus {
-			PowerOn: request["PowerOn"].(bool),
-			HeatingMode: request["heatingOn"].(bool),
-			Power: request["Power"].(int32),
-		})
-	
-		rsp := &Airconditioner.Empty {}
-		if err:= c.Call(context.TODO(),req,rsp); err!= nil {
-			http.Error(w, err.Error(), 500)
-			log.Log(err)
-			return
-		}
-	
-		// encode and write the response as json
-		if err := json.NewEncoder(w).Encode(rsp); err != nil {
-			http.Error(w, err.Error(), 500)
-			return
-		}
-	}
-}
-
-func AirConditionerPage(w http.ResponseWriter, r *http.Request){
-	RoomName :=strings.TrimPrefix( r.URL.RequestURI(),"/Airconditioner/")
-
-	if _, exists := RoomsWithAirConditioner[RoomName]; exists {
-		c := internalService.Client()
-		req := c.NewRequest("iots.temperature.srv.AirConditioner."+RoomName, "AirConditioner.GetDeviceStatus", &Airconditioner.Empty {
-	
-		})
-	
-		rsp := &Airconditioner.DeviceStatus {}
-		if err:= c.Call(context.TODO(),req,rsp); err!= nil {
-			http.Error(w, err.Error(), 500)
-			log.Log(err)
-			return
-		}
-	
-		// encode and write the response as json
-		if err := json.NewEncoder(w).Encode(rsp); err != nil {
-			http.Error(w, err.Error(), 500)
-			return
-		}
-	} else {
-		response := map[string]interface{}{
-			"powerOn": "No data available",
-			"HeatingMode": "No data available",
-			"Power": "No data available",
-		}
-		if err := json.NewEncoder(w).Encode(response); err != nil {
-			http.Error(w, err.Error(), 500)
-			return
-		}
-	}
-	
-}
-
-func ThermometarPage(w http.ResponseWriter, r *http.Request){
-	RoomName :=strings.TrimPrefix( r.URL.RequestURI(),"/Thermometar/")
-
-	if _, exists := RoomsWithThermometar[RoomName]; exists {
-		c := internalService.Client()
-		req := c.NewRequest("iots.temperature.srv.Thermometar."+RoomName, "Thermometar.GetStatus", &Thermometar.Empty {
-	
-		})
-	
-		rsp := &Thermometar.RoomTemperatrue {}
-		if err:= c.Call(context.TODO(),req,rsp); err!= nil {
-			http.Error(w, err.Error(), 500)
-			log.Log(err)
-			return
-		}
-	
-		// encode and write the response as json
-		if err := json.NewEncoder(w).Encode(rsp); err != nil {
-			http.Error(w, err.Error(), 500)
-			return
-		}
-	} else {
-		response := map[string]interface{}{
-			"RoomName": RoomName,
-			"Temperature": "No data available",
-		}
-		if err := json.NewEncoder(w).Encode(response); err != nil {
-			http.Error(w, err.Error(), 500)
-			return
-		}
-	}
-}
-
-func GetRooms(w http.ResponseWriter, r *http.Request){
-	var RoomNames []string
-	for key, _ := range RoomsWithThermometar {
-		RoomNames = append(RoomNames,key)
-	}
-	
-	//TODO add other rooms
-
-	// encode and write the response as json
-	if err := json.NewEncoder(w).Encode(RoomNames); err != nil {
-		http.Error(w, err.Error(), 500)
-		return
-	}
-}
-
-func TopicServer(){
-	
 	RoomsWithThermometarChannel := make(chan string, 100)
 	RoomsWithAirConditionerChannel := make(chan string, 100)
 
-	internalService = micro.NewService(
-		micro.Name("iots.temperature.srv.Controller"),
-	)
-	internalService.Init()
-	RoomMapper(RoomsWithThermometarChannel, "Thermometar", internalService.Server())
-	RoomMapper(RoomsWithAirConditionerChannel, "AirConditioner", internalService.Server())
+	
+	(*internalService).Init()
+	subscriber.RoomMapper(RoomsWithThermometarChannel, "Thermometar", (*internalService).Server())
+	subscriber.RoomMapper(RoomsWithAirConditionerChannel, "AirConditioner", (*internalService).Server())
 
-	go RoomMaintainer(&RoomsWithAirConditioner,RoomsWithAirConditionerChannel)
-	go RoomMaintainer(&RoomsWithThermometar, RoomsWithThermometarChannel)
+	go subscriber.RoomMaintainer(RoomsWithAirConditioner,RoomsWithAirConditionerChannel)
+	go subscriber.RoomMaintainer(RoomsWithThermometar, RoomsWithThermometarChannel)
 
-	if err := internalService.Run(); err != nil {
+	if err := (*internalService).Run(); err != nil {
 		log.Fatal(err)
 	}
 
@@ -197,6 +37,9 @@ func TopicServer(){
 }
 
 func main() {
+	var RoomsWithThermometar map[string] time.Time
+	var RoomsWithAirConditioner map[string]time.Time
+
 	RoomsWithAirConditioner = make(map[string]time.Time)
 	RoomsWithThermometar = make(map[string]time.Time)
 
@@ -204,18 +47,28 @@ func main() {
 		web.Name("iots.TemperatureControlSystem"),
 	)
 
+	handler := new(handler.TemperatureControlSystem)
+	handler.RoomsWithThermometar = &RoomsWithThermometar
+	handler.RoomsWithAirConditioner = &RoomsWithAirConditioner
+	
+	internalservice := micro.NewService(
+		micro.Name("iots.temperature.srv.Controller"),
+	)
+	
+	handler.InternalService = &internalservice
+
 	service.Handle("/", http.FileServer(http.Dir("WebPages")))
-	service.HandleFunc("/GetRooms", GetRooms)
-	service.HandleFunc("/Airconditioner/",AirConditionerPage)
-	service.HandleFunc("/Thermometar/",ThermometarPage)
-	service.HandleFunc("/SetAirconditioner/",SetAirconditioner)
+	service.HandleFunc("/GetRooms", handler.GetRooms)
+	service.HandleFunc("/Airconditioner/",handler.AirConditionerPage)
+	service.HandleFunc("/Thermometar/",handler.ThermometarPage)
+	service.HandleFunc("/SetAirconditioner/",handler.SetAirconditioner)
 	
 
 	if err := service.Init(); err!=nil {
 		log.Fatal(err)
 	}
 
-	go TopicServer()
+	go TopicServer(&RoomsWithThermometar,&RoomsWithAirConditioner, handler.InternalService)
 
 	if err := service.Run(); err!=nil {
 		log.Fatal(err)

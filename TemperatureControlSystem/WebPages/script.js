@@ -26,12 +26,30 @@ function getAirCondtionerSetatus(){
         url: url,
         data: "{}",
         success: function(data) {
+            console.log(data)
             var powerOn = document.getElementById("AirConditionerPowerOn");
             var heatingMode = document.getElementById("AirConditionerHeatingMode");
             var power = document.getElementById("AirConditionerPower");
-            powerOn.innerHTML = "Power On: " + data.powerOn
-            heatingMode.innerHTML = "Heating mode: " + data.HeatingMode;
-            power.innerHTML = "Power: "+data.Power; 
+            if(data.PowerOn){
+                powerOn.innerHTML = "Power On: " + data.PowerOn
+            }
+            else {
+                powerOn.innerHTML = "Power On: false"
+            }
+
+            if( data.HeatingMode){
+                heatingMode.innerHTML = "Heating mode: " + data.HeatingMode;
+            }
+            else {
+                heatingMode.innerHTML = "Heating mode: false";
+            }
+
+            if(data.Power){
+                power.innerHTML = "Power: "+data.Power; 
+            }
+            else {
+                power.innerHTML = "Power: 0"; 
+            }
         },
     });
 }
@@ -41,9 +59,15 @@ function setAirCondtionerStatus(){
     var url = window.location.href.replace(/\/$/, "") + "/SetAirconditioner/"+roomName;
     var powerOn = document.getElementById("PowerOn").checked
     var heatingOn = document.getElementById("HeatingMode").checked
-    var power = docuemnt.getElementById("Power").value
+    var power = parseInt(document.getElementById("Power").value)
     var autoTemperature = document.getElementById("AutoTemp").checked
-    var desiredtemp = document.getElementById("DesiredTemp").value
+    var desiredtemp = parseInt(document.getElementById("DesiredTemp").value)
+    if(isNaN(power)){
+        power = 0
+    }
+    if(isNaN(desiredtemp)){
+        desiredtemp = 0;
+    }
     $.ajax({
         method: "POST",
         dataType: "json",
