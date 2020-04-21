@@ -27,7 +27,19 @@ func (t *TemperatureControlSystem)GetRooms(w http.ResponseWriter, r *http.Reques
 		RoomNames = append(RoomNames,key)
 	}
 	
-	//TODO add other rooms
+	
+	for key, _ := range *t.RoomsWithAirConditioner {
+		exists := false
+		for _, name := range RoomNames {
+			if (name == key){
+				exists = true
+				break
+			}
+		}
+		if !exists {
+			RoomNames = append(RoomNames, key)
+		}
+	}
 
 	// encode and write the response as json
 	if err := json.NewEncoder(w).Encode(RoomNames); err != nil {
@@ -108,7 +120,6 @@ func (t *TemperatureControlSystem)SetAirconditioner(w http.ResponseWriter, r*htt
 	if _, exists := (*t.RoomsWithAirConditioner)[RoomName]; exists {
 		// decode the incoming request as json
 		var request map[string]interface{}
-		log.Log("Dekodiranje")
 		if err := json.NewDecoder(r.Body).Decode(&request); err != nil {
 			http.Error(w, err.Error(), 500)
 			return

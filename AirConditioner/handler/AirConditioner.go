@@ -72,9 +72,9 @@ func AirconditionerLogic(airconditoner *AirConditioner, c client.Client){
 			temperatureD := (rand.Int63()%6)*int64(airconditoner.Power)
 			var command string
 			if airconditoner.HeatingMode{
-				command = "Thermometar.CoolTheRoom"
-			} else {
 				command = "Thermometar.HeatTheRoom"
+			} else {
+				command = "Thermometar.CoolTheRoom"
 			}
 			req := c.NewRequest("iots.temperature.srv.Thermometar."+airconditoner.RoomName, command, &Thermometar.Degrees {
 				Temperature: temperatureD,

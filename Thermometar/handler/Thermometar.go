@@ -3,8 +3,6 @@ package handler
 
 import (
 	"context"
-
-	"github.com/micro/go-micro/util/log"
 	"math/rand"
 	"time"
 	thermometar "github.com/CommName/Go-micro-DemoApp/Thermometar/proto/Thermometar"
@@ -31,14 +29,12 @@ func (e *Thermometar) GetStatus(context context.Context, req *thermometar.Empty,
 
 
 func (e *Thermometar) CoolTheRoom(context context.Context, req *thermometar.Degrees, rep *thermometar.RoomTemperatrue) error {
-	log.Log("Received Hello.Call request")
 	e.AddToTemper <- -req.Temperature
 	err := e.LoadStatus(rep)
 	return err
 }
 
 func (e *Thermometar) HeatTheRoom(context context.Context, req *thermometar.Degrees, rep *thermometar.RoomTemperatrue) error {
-	log.Log("Received Hello.Call request")
 	e.AddToTemper <- req.Temperature
 	err := e.LoadStatus(rep)
 	return err
