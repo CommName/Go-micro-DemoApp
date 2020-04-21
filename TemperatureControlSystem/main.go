@@ -45,6 +45,7 @@ func main() {
 
 	service := web.NewService(
 		web.Name("iots.TemperatureControlSystem"),
+		web.Address(":8080"),
 	)
 
 	handler := new(handler.TemperatureControlSystem)

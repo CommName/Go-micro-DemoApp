@@ -37,9 +37,13 @@ func (e *AirConditioner) SetDeviceStatus(context context.Context, req *aircondit
 }
 
 func (e *AirConditioner) GetDeviceStatus(context context.Context, req *airconditioner.Empty, rep *airconditioner.DeviceStatus) error {
+	e.Mux.Lock()
 	rep.PowerOn = e.PowerOn
 	rep.HeatingMode = e.HeatingMode
 	rep.Power = e.Power
+	rep.AutoMode = e.Auto
+	rep.DesiredTemp = e.DesiredTemp
+	e.Mux.Unlock()
 	return nil
 }
 

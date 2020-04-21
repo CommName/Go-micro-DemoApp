@@ -30,6 +30,8 @@ function getAirCondtionerSetatus(){
             var powerOn = document.getElementById("AirConditionerPowerOn");
             var heatingMode = document.getElementById("AirConditionerHeatingMode");
             var power = document.getElementById("AirConditionerPower");
+            var auto = document.getElementById("AutoTemperature");
+            var desTemp = document.getElementById("DesiredTemperature"); 
             if(data.PowerOn){
                 powerOn.innerHTML = "Power On: " + data.PowerOn
             }
@@ -49,6 +51,20 @@ function getAirCondtionerSetatus(){
             }
             else {
                 power.innerHTML = "Power: 0"; 
+            }
+
+            if(data.AutoMode){
+                auto.innerHTML = "Auto mode: "+data.AutoMode; 
+            }
+            else {
+                auto.innerHTML = "Auto mode: false"; 
+            }
+
+            if(data.DesiredTemperature){
+                desTemp.innerHTML = "Desired Temperature: "+data.DesiredTemperature; 
+            }
+            else {
+                desTemp.innerHTML = "Desired Temperature: 0"; 
             }
         },
     });
@@ -77,7 +93,7 @@ function setAirCondtionerStatus(){
             PowerOn: powerOn,
             heatingOn: heatingOn,
             Power: power,
-            AutoTemperature: autoTemperature,
+            Auto: autoTemperature,
             DesiredTemp: desiredtemp,
         }),
         success: function(data) {

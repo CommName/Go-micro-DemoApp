@@ -92,6 +92,8 @@ func (t *TemperatureControlSystem)AirConditionerPage(w http.ResponseWriter, r *h
 			"powerOn": "No data available",
 			"HeatingMode": "No data available",
 			"Power": "No data available",
+			"AutoMode": "No data available",
+			"DesiredTemperature": "No data available",
 		}
 		if err := json.NewEncoder(w).Encode(response); err != nil {
 			http.Error(w, err.Error(), 500)
@@ -103,23 +105,25 @@ func (t *TemperatureControlSystem)AirConditionerPage(w http.ResponseWriter, r *h
 
 func (t *TemperatureControlSystem)SetAirconditioner(w http.ResponseWriter, r*http.Request){
 	RoomName :=strings.TrimPrefix( r.URL.RequestURI(),"/SetAirconditioner/")
-	log.Log("Test")
 	if _, exists := (*t.RoomsWithAirConditioner)[RoomName]; exists {
 		// decode the incoming request as json
 		var request map[string]interface{}
-		log.Log("test")
+		log.Log("Dekodiranje")
 		if err := json.NewDecoder(r.Body).Decode(&request); err != nil {
 			http.Error(w, err.Error(), 500)
 			return
 		}
 		
 		c := (*t.InternalService).Client()
+		
+		log.Log(request)
 		req := c.NewRequest("iots.temperature.srv.AirConditioner."+RoomName, "AirConditioner.SetDeviceStatus", &Airconditioner.DeviceStatus {
 			PowerOn: request["PowerOn"].(bool),
 			HeatingMode: request["heatingOn"].(bool),
 			Power: int32(request["Power"].(float64)),
+			AutoMode: request["Auto"].(bool),
+			DesiredTemp: int64(request["DesiredTemp"].(float64)),
 		})
-	
 		rsp := &Airconditioner.Empty {}
 		if err:= c.Call(context.TODO(),req,rsp); err!= nil {
 			http.Error(w, err.Error(), 500)
