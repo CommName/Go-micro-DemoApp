@@ -8,14 +8,12 @@ service AirConditioner {
 
 }
 
-message Message {
-    string say = 1;
-}
-
 message DeviceStatus{
     bool PowerOn =  1;
     bool HeatingMode = 2;
     int32 Power = 3;
+    bool AutoMode = 4;
+    int64 DesiredTemp = 5;
 }
 
 message Empty {
