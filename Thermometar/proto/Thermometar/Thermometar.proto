@@ -4,13 +4,8 @@ package iots.temperature.srv.Thermometar;
 
 service Thermometar {
 	rpc GetStatus(Empty) returns (RoomTemperatrue) {}
-    rpc Subscriber(Empty) returns (Empty) {}
     rpc CoolTheRoom(Degrees) returns (RoomTemperatrue) {}
     rpc HeatTheRoom(Degrees) returns (RoomTemperatrue) {}
-}
-
-message Message {
-	string say = 1;
 }
 
 message RoomTemperatrue {

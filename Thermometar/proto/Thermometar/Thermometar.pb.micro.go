@@ -35,7 +35,6 @@ var _ server.Option
 
 type ThermometarService interface {
 	GetStatus(ctx context.Context, in *Empty, opts ...client.CallOption) (*RoomTemperatrue, error)
-	Subscriber(ctx context.Context, in *Empty, opts ...client.CallOption) (*Empty, error)
 	CoolTheRoom(ctx context.Context, in *Degrees, opts ...client.CallOption) (*RoomTemperatrue, error)
 	HeatTheRoom(ctx context.Context, in *Degrees, opts ...client.CallOption) (*RoomTemperatrue, error)
 }
@@ -68,16 +67,6 @@ func (c *thermometarService) GetStatus(ctx context.Context, in *Empty, opts ...c
 	return out, nil
 }
 
-func (c *thermometarService) Subscriber(ctx context.Context, in *Empty, opts ...client.CallOption) (*Empty, error) {
-	req := c.c.NewRequest(c.name, "Thermometar.Subscriber", in)
-	out := new(Empty)
-	err := c.c.Call(ctx, req, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
 func (c *thermometarService) CoolTheRoom(ctx context.Context, in *Degrees, opts ...client.CallOption) (*RoomTemperatrue, error) {
 	req := c.c.NewRequest(c.name, "Thermometar.CoolTheRoom", in)
 	out := new(RoomTemperatrue)
@@ -102,7 +91,6 @@ func (c *thermometarService) HeatTheRoom(ctx context.Context, in *Degrees, opts 
 
 type ThermometarHandler interface {
 	GetStatus(context.Context, *Empty, *RoomTemperatrue) error
-	Subscriber(context.Context, *Empty, *Empty) error
 	CoolTheRoom(context.Context, *Degrees, *RoomTemperatrue) error
 	HeatTheRoom(context.Context, *Degrees, *RoomTemperatrue) error
 }
@@ -110,7 +98,6 @@ type ThermometarHandler interface {
 func RegisterThermometarHandler(s server.Server, hdlr ThermometarHandler, opts ...server.HandlerOption) error {
 	type thermometar interface {
 		GetStatus(ctx context.Context, in *Empty, out *RoomTemperatrue) error
-		Subscriber(ctx context.Context, in *Empty, out *Empty) error
 		CoolTheRoom(ctx context.Context, in *Degrees, out *RoomTemperatrue) error
 		HeatTheRoom(ctx context.Context, in *Degrees, out *RoomTemperatrue) error
 	}
@@ -127,10 +114,6 @@ type thermometarHandler struct {
 
 func (h *thermometarHandler) GetStatus(ctx context.Context, in *Empty, out *RoomTemperatrue) error {
 	return h.ThermometarHandler.GetStatus(ctx, in, out)
-}
-
-func (h *thermometarHandler) Subscriber(ctx context.Context, in *Empty, out *Empty) error {
-	return h.ThermometarHandler.Subscriber(ctx, in, out)
 }
 
 func (h *thermometarHandler) CoolTheRoom(ctx context.Context, in *Degrees, out *RoomTemperatrue) error {

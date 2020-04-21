@@ -13,18 +13,9 @@ import (
 
 import (
 	"fmt"
-	"math/rand"
 	"time"
 )
 
-func EnviermentSimulator(termometar *handler.Thermometar) error {
-	for ; true ; {
-		temperatureChange := int64(rand.Uint64()%20) -10
-		termometar.Temperature += temperatureChange
-		time.Sleep(1000 * time.Millisecond)
-	}
-	return nil
-}
 
 func main() {
 	var roomName string
@@ -64,10 +55,11 @@ func main() {
 	termometar := new(handler.Thermometar)
 	termometar.RoomName = roomName
 	termometar.Temperature = 22
+	termometar.AddToTemper = make(chan int64,20)
 	thermometar.RegisterThermometarHandler(service.Server(), termometar)
 	
 	//Env Simulator
-	go EnviermentSimulator(termometar)
+	go handler.EnviermentSimulator(termometar)
 
 	// Run service
 	if err := service.Run(); err != nil {
