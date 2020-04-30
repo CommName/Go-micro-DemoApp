@@ -1,6 +1,6 @@
 # Temperature control system
 
-This is a simple project to demostrate Go-Micro framework. This repository consists of three diffrent project that simulate IoT system.
+This is a simple project to demostrate Go-Micro framework.This projects is not architectly good designed, it was made to demonstrate client, server, pubsub and web functionality of Go-Micro framework. This repository consists of three diffrent project that simulate IoT system.
 
 The projects are:
     -TemperatureControlSystem
